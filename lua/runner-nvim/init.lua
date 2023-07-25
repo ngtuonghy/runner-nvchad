@@ -1,7 +1,7 @@
 local M = {}
 Default_config = {
 	terminal = "horizontal",
-	clear = false,
+	ClearPrevious = true,
 	commands = {
 		go = {
 			cmd = "go run $realPath",
@@ -16,17 +16,29 @@ Default_config = {
 	},
 }
 
-if vim.g.my_feature_enabled == nil then
-	vim.g.my_feature_enabled = true
+if vim.g.toggleMakefile == nil then
+	vim.g.toggleMakefile = true
+end
+if vim.g.clearcode == nil then
+	vim.g.clearcode = true
 end
 
 -- Hàm để toggle chức năng
-function M.toggle_my_feature()
-	vim.g.my_feature_enabled = not vim.g.my_feature_enabled
-	if vim.g.my_feature_enabled then
+function M.toggleMakefile()
+	vim.g.toggleMakefile = not vim.g.toggleMakefile
+	if vim.g.toggleMakefile then
 		print("Makefile prior is now enabled!")
 	else
-		print("Makefile is now disabled!")
+		print("Makefile prior is now disabled!")
+	end
+end
+
+function M.toggleClearprev()
+	vim.g.clearcode = not vim.g.clearcode
+	if vim.g.clearcode then
+		print("Clear Previous Output is now enabled!")
+	else
+		print("Clear Previous Output is now disabled!")
 	end
 end
 
@@ -70,16 +82,16 @@ local function detect_operating_system()
 	elseif vim.fn.has("mac") == 1 then
 		return "macOS"
 	elseif vim.fn.has("unix") == 1 then
-		return "Linux/Unix"
+		return "Linux"
 	else
 		return "Unknown"
 	end
 end
 
 local function makefile(config, current_file)
-	if Default_config.clear then
+	if Default_config.ClearPrevious then
 		local get_os = detect_operating_system()
-		if get_os == "Linux/Unix" or get_os == "macOS" then
+		if get_os == "Linux" or get_os == "macOS" then
 			require("nvterm.terminal").send("clear", Default_config.terminal)
 		elseif get_os == "Windows" then
 			require("nvterm.terminal").send("cls", Default_config.terminal)
@@ -93,12 +105,12 @@ function M.Coderun()
 	local current_filetype = get_filetype()
 	local current_filepath = get_current_filepath()
 	local get_name = Default_config.commands[current_filetype]
-	if vim.g.my_feature_enabled and get_name and get_name.Makefile then
+	if vim.g.toggleMakefile and get_name and get_name.Makefile then
 		makefile(get_name, current_filepath)
 	else
 		if get_name and get_name.cmd then
 			local get_cmd = changeCmd()
-			if Default_config.clear then
+			if vim.g.toggleMakefile and Default_config.ClearPrevious then
 				local get_os = detect_operating_system()
 				if get_os == "Linux" or get_os == "macOS" then
 					require("nvterm.terminal").send("clear", Default_config.terminal)
@@ -114,11 +126,13 @@ function M.Coderun()
 		end
 	end
 end
+
 M.setup = function(config)
 	Default_config = vim.tbl_deep_extend("force", Default_config, config)
 	return Default_config
 end
 
 vim.cmd("command! Runnercode lua require'runner-nvim'.Coderun()")
-vim.cmd("command! Runnermakefile lua require'runner-nvim'.toggle_my_feature()")
+vim.cmd("command! Runnermakefile lua require'runner-nvim'.toggleMakefile()")
+vim.cmd("command! Runnerclear lua require'runner-nvim'.toggleClearprev()")
 return M
