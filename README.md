@@ -42,6 +42,7 @@ require('runner-nvim').setup{
   },
   cpp = {
    cmd  = "cd $dir && g++ $fileName -o $fileNameWithoutExt && $dir$fileNameWithoutExt",
+  },
  },
 }
 ```
