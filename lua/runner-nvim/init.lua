@@ -1,7 +1,7 @@
 local M = {}
 Default_config = {
 	terminal = "horizontal",
-	ClearPrevious = true,
+	ClearPrevious = false,
 	commands = {
 		javascript = { cmd = "node $realPath" },
 		java = { cmd = "cd $dir && javac $fileName && java $fileNameWithoutExt" },
