@@ -19,9 +19,9 @@ end
 function M.toggle_my_feature()
 	vim.g.my_feature_enabled = not vim.g.my_feature_enabled
 	if vim.g.my_feature_enabled then
-		print("My feature is now enabled!")
+		print("Makefile is now enabled!")
 	else
-		print("My feature is now disabled!")
+		print("Makefile is now disabled!")
 	end
 end
 
@@ -96,6 +96,6 @@ M.setup = function(config)
 	return Default_config
 end
 
-vim.cmd("command! Runcode lua require'coderun'.Coderun()")
-vim.cmd("command! Togglecode lua require'coderun'.toggle_my_feature()")
+vim.cmd("command! runnercode lua require'coderun'.Coderun()")
+vim.cmd("command! runnermakefile lua require'coderun'.toggle_my_feature()")
 return M
