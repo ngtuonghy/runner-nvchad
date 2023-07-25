@@ -3,16 +3,57 @@ Default_config = {
 	terminal = "horizontal",
 	ClearPrevious = true,
 	commands = {
-		go = {
-			cmd = "go run $realPath",
-		},
-		cpp = {
-			cmd = "cd $dir && g++ $fileName -o $fileNameWithoutExt && $dir$fileNameWithoutExt",
-			Makefile = "makefile ",
-		},
-		java = {
-			cmd = "cd $dir && javac $fileName && java $fileNameWithoutExt",
-		},
+		javascript = { cmd = "node $realPath" },
+		java = { cmd = "cd $dir && javac $fileName && java $fileNameWithoutExt" },
+		c = { cmd = "cd $dir && gcc $fileName -o $fileNameWithoutExt && $dir$fileNameWithoutExt" },
+		zig = { cmd = "zig run $realPath" },
+		cpp = { cmd = "cd $dir && g++ $fileName -o $fileNameWithoutExt && $dir$fileNameWithoutExt" },
+		php = { cmd = "php $realPath" },
+		python = { cmd = "python -u $realPath" },
+		perl = { cmd = "perl $realPath" },
+		perl6 = { cmd = "perl6 $realPath" },
+		ruby = { cmd = "ruby $realPath" },
+		go = { cmd = "go run $realPath" },
+		lua = { cmd = "lua $realPath" },
+		groovy = { cmd = "groovy $realPath" },
+		powershell = { cmd = "powershell -ExecutionPolicy ByPass -File $realPath" },
+		bat = { cmd = "cmd /c $realPath" },
+		shellscript = { cmd = "bash $realPath" },
+		fsharp = { cmd = "fsi $realPath" },
+		csharp = { cmd = "scriptcs $realPath" },
+		vbscript = { cmd = "cscript //Nologo $realPath" },
+		typescript = { cmd = "ts-node $realPath" },
+		coffeescript = { cmd = "coffee $realPath" },
+		scala = { cmd = "scala $realPath" },
+		swift = { cmd = "swift $realPath" },
+		julia = { cmd = "julia $realPath" },
+		crystal = { cmd = "crystal $realPath" },
+		ocaml = { cmd = "ocaml $realPath" },
+		r = { cmd = "Rscript $realPath" },
+		applescript = { cmd = "osascript $realPath" },
+		clojure = { cmd = "lein exec $realPath" },
+		haxe = { cmd = "haxe --cwd $dirWithoutTrailingSlash --run $fileNameWithoutExt" },
+		rust = { cmd = "cd $dir && rustc $fileName && $dir$fileNameWithoutExt" },
+		racket = { cmd = "racket $realPath" },
+		scheme = { cmd = "csi -script $realPath" },
+		ahk = { cmd = "autohotkey $realPath" },
+		autoit = { cmd = "autoit3 $realPath" },
+		dart = { cmd = "dart $realPath" },
+		pascal = { cmd = "cd $dir && fpc $fileName && $dir$fileNameWithoutExt" },
+		d = { cmd = "cd $dir && dmd $fileName && $dir$fileNameWithoutExt" },
+		haskell = { cmd = "runghc $realPath" },
+		nim = { cmd = "nim compile --verbosity:0 --hints:off --run $realPath" },
+		lisp = { cmd = "sbcl --script $realPath" },
+		kit = { cmd = "kitc --run $realPath" },
+		v = { cmd = "v run $realPath" },
+		sass = { cmd = "sass --style expanded $realPath" },
+		scss = { cmd = "scss --style expanded $realPath" },
+		less = { cmd = "cd $dir && lessc $fileName $fileNameWithoutExt.css" },
+		FortranFreeForm = { cmd = "cd $dir && gfortran $fileName -o $fileNameWithoutExt && $dir$fileNameWithoutExt" },
+		fortran_modern = { cmd = "cd $dir && gfortran $fileName -o $fileNameWithoutExt && $dir$fileNameWithoutExt" },
+		fortran_fixed_form = { cmd = "cd $dir && gfortran $fileName -o $fileNameWithoutExt && $dir$fileNameWithoutExt" },
+		fortran = { cmd = "cd $dir && gfortran $fileName -o $fileNameWithoutExt && $dir$fileNameWithoutExt" },
+		sml = { cmd = "cd $dir && sml $fileName" },
 	},
 }
 
@@ -110,7 +151,7 @@ function M.Coderun()
 	else
 		if get_name and get_name.cmd then
 			local get_cmd = changeCmd()
-			if vim.g.toggleMakefile and Default_config.ClearPrevious then
+			if vim.g.clearcode and Default_config.ClearPrevious then
 				local get_os = detect_operating_system()
 				if get_os == "Linux" or get_os == "macOS" then
 					require("nvterm.terminal").send("clear", Default_config.terminal)
