@@ -105,7 +105,7 @@ local function changeCmd()
 	local current_filepath = get_current_filepath()
 	local current_filetype = get_filetype()
 	local current_filename = get_current_filename()
-	local current_withoutext = get_current_filename():gsub("%.cpp", "")
+	local current_withoutext = get_current_filename():gsub("%." .. current_filetype, "")
 	local realPath = get_real_path()
 	local getcmd = Default_config.commands[current_filetype].cmd
 	getcmd = string.gsub(getcmd, "$dir$fileNameWithoutExt", "./" .. current_withoutext)
