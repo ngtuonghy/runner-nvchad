@@ -40,6 +40,8 @@ require('runner-nvim').setup{
    cmd = "lua run $filePath",
    Makefile = "Make" --lua always priority run makefile
   },
+  cpp = {
+   cmd  = "cd $dir && g++ $fileName -o $fileNameWithoutExt && $dir$fileNameWithoutExt",
  },
 }
 ```
