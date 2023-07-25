@@ -65,13 +65,12 @@ local function changeCmd()
 end
 
 local function detect_operating_system()
-	local uname = vim.loop.os_uname()
-	if uname.sysname == "Linux" then
-		return "Linux"
-	elseif uname.sysname == "Darwin" then
-		return "macOS"
-	elseif uname.sysname == "Windows" then
+	if vim.fn.has("win32") == 1 then
 		return "Windows"
+	elseif vim.fn.has("mac") == 1 then
+		return "macOS"
+	elseif vim.fn.has("unix") == 1 then
+		return "Linux/Unix"
 	else
 		return "Unknown"
 	end
@@ -80,7 +79,7 @@ end
 local function makefile(config, current_file)
 	if Default_config.clear then
 		local get_os = detect_operating_system()
-		if get_os == "Linux" or get_os == "macOS" then
+		if get_os == "Linux/Unix" or get_os == "macOS" then
 			require("nvterm.terminal").send("clear", Default_config.terminal)
 		elseif get_os == "Windows" then
 			require("nvterm.terminal").send("cls", Default_config.terminal)
