@@ -33,7 +33,7 @@ A Neovim plugin to run code fast in terminals [**nvterm**](https://github.com/Nv
 
 ```lua
 require('runner-nvim').setup{
- terminals = "horizontal",
+ terminals = "horizontal", -- "horizontal|vertical|float"
  clearprevious = false,
  commands = {
   lua = {
