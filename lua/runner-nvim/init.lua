@@ -61,10 +61,6 @@ if vim.g.toggleMakefile == nil then
 	vim.g.toggleMakefile = true
 end
 
-if vim.g.clearcode == nil then
-	vim.g.clearcode = true
-end
-
 -- Hàm để toggle chức năng
 function M.toggleMakefile()
 	vim.g.toggleMakefile = not vim.g.toggleMakefile
@@ -72,15 +68,6 @@ function M.toggleMakefile()
 		print("Makefile prior is now enabled!")
 	else
 		print("Makefile prior is now disabled!")
-	end
-end
-
-function M.toggleClearprev()
-	vim.g.clearcode = not vim.g.clearcode
-	if vim.g.clearcode then
-		print("Clear Previous Output is now enabled!")
-	else
-		print("Clear Previous Output is now disabled!")
 	end
 end
 
@@ -131,7 +118,7 @@ local function detect_operating_system()
 end
 
 local function makefile(config, current_file)
-	if Default_config.clearprevious or vim.g.clearcode then
+	if Default_config.clearprevious then
 		local get_os = detect_operating_system()
 		if get_os == "Linux" or get_os == "macOS" then
 			require("nvterm.terminal").send("clear", Default_config.terminal)
@@ -152,7 +139,7 @@ function M.Coderun()
 	else
 		if get_name and get_name.cmd then
 			local get_cmd = changeCmd()
-			if Default_config.clearprevious or vim.g.clearcode then
+			if Default_config.clearprevious then
 				local get_os = detect_operating_system()
 				if get_os == "Linux" or get_os == "macOS" then
 					require("nvterm.terminal").send("clear", Default_config.terminal)
@@ -176,5 +163,4 @@ end
 
 vim.cmd("command! Runnercode lua require'runner-nvim'.Coderun()")
 vim.cmd("command! Runnermakefile lua require'runner-nvim'.toggleMakefile()")
-vim.cmd("command! Runnerclear lua require'runner-nvim'.toggleClearprev()")
 return M

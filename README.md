@@ -48,8 +48,7 @@ require('runner-nvim').setup{
 
 ```lua
 Runnercode -- Run code
-Runnermakefile -- Togglepriority run Makefile
-Runnerclear -- Toggle clear previous output"
+Runnermakefile -- Toggle priority run Makefile
 ```
 
 - Custom mappings
@@ -59,7 +58,6 @@ M.runner = {
   n = {
     ["<leader>rc"] = { "<cmd>Runnercode<cr>", "Run code" },
     ["<leader>rm"] = { "<cmd>Runnermakefile<cr>", "Toggle priority run Makefile" },
-    ["<leader>rl"] = { "<cmd>Runnerclear<cr>", "Toggle clear previous output" },
   },
 }
 ```
