@@ -1,7 +1,7 @@
 local M = {}
 Default_config = {
 	terminal = "horizontal",
-	ClearPrevious = false,
+	clearprevious = false,
 	commands = {
 		javascript = { cmd = "node $realPath" },
 		java = { cmd = "cd $dir && javac $fileName && java $fileNameWithoutExt" },
@@ -60,8 +60,11 @@ Default_config = {
 if vim.g.toggleMakefile == nil then
 	vim.g.toggleMakefile = true
 end
-if vim.g.clearcode == nil then
+
+if Default_config.clearprevious then
 	vim.g.clearcode = true
+else
+	vim.g.clearcode = false
 end
 
 -- Hàm để toggle chức năng
@@ -130,7 +133,7 @@ local function detect_operating_system()
 end
 
 local function makefile(config, current_file)
-	if Default_config.ClearPrevious then
+	if vim.g.clearcode then
 		local get_os = detect_operating_system()
 		if get_os == "Linux" or get_os == "macOS" then
 			require("nvterm.terminal").send("clear", Default_config.terminal)
@@ -151,7 +154,7 @@ function M.Coderun()
 	else
 		if get_name and get_name.cmd then
 			local get_cmd = changeCmd()
-			if vim.g.clearcode and Default_config.ClearPrevious then
+			if vim.g.clearcode then
 				local get_os = detect_operating_system()
 				if get_os == "Linux" or get_os == "macOS" then
 					require("nvterm.terminal").send("clear", Default_config.terminal)

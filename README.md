@@ -1,45 +1,65 @@
-# coderun-nvim
+# runner-nvim
 
 A Neovim plugin to run code fast in terminals [**nvterm**](https://github.com/NvChad/nvterm)
 
-
-https://github.com/ngtuonghy/runner-nvim/assets/116539745/c68063e7-2e84-46a9-8021-dfcee39d7051
-
+<https://github.com/ngtuonghy/runner-nvim/assets/116539745/c68063e7-2e84-46a9-8021-dfcee39d7051>
 
 ## Installation
 
 - install the plugin with lazy.nvim as you would for any other:
 
 ```lua
-
-
  require("lazy").setup({
+
  {
   "ngtuonghy/runner-nvim",
-  dependencies = {
-   "nvchad/nvterm",
-    require("runner-nvim").setup()
-  },
- },
-})
+  dependencies = {"nvchad/nvterm"},
+  config = funtions()
+  require("runner-nvim").setup{}
+},
 
+})
 ```
 
 ## Configuration
 
+- The comment plugin needs to be initialised using:
+
+  ```lua
+  require("runner-nvim").setup{}
+  ```
+
+- However you can pass in some config options, the defaults are
+
 ```lua
-require('runner-nvim').setup(
+require('runner-nvim').setup{
  terminals = "horizontal",
+ clearprevious = false,
  commands = {
-  go = {
-   cmd = "lua run",
+  lua = {
+   cmd = "lua run $filePath",
+   Makefile = "Make" --lua always priority run makefile
   },
  },
-)
+}
 ```
 
 ## Usage
 
-```cmd
-Runnercode
+```lua
+Runnercode -- Run code
+Runnermakefile -- Togglepriority run Makefile
+Runnerclear -- Toggle clear previous output"
+```
+
+- Custom mappings
+
+```lua
+M.runner = {
+  n = {
+    ["<leader>rc"] = { "<cmd>Runnercode<cr>", "Run code" },
+    ["<leader>rm"] = { "<cmd>Runnermakefile<cr>", "Toggle priority run Makefile" },
+    ["<leader>rl"] = { "<cmd>Runnerclear<cr>", "Toggle clear previous output" },
+  },
+}
 ```
