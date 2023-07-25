@@ -9,10 +9,10 @@ A Neovim plugin to run code fast in terminals [**nvterm**](https://github.com/Nv
 ```lua
  require("lazy").setup({
  {
-  "ngtuonghy/coderun-nvim",
+  "ngtuonghy/runner-nvim",
   dependencies = {
    "nvchad/nvterm",
-    require("coderun-nvim").setup()
+    require("runner-nvim").setup()
   },
  },
 })
@@ -34,4 +34,6 @@ require('runner-nvim').setup(
 
 ## Usage
 
+```cmd
 Runnercode
+```
