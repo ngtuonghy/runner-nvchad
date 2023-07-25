@@ -22,7 +22,7 @@ A Neovim plugin to run code fast in terminals [**nvterm**](https://github.com/Nv
 ## Configuration
 
 ```lua
-require('coderun').setup(
+require('runner-nvim').setup(
  terminals = "horizontal",
  commands = {
   go = {
@@ -34,4 +34,4 @@ require('coderun').setup(
 
 ## Usage
 
-coderun
+Runnercode

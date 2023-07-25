@@ -96,6 +96,6 @@ M.setup = function(config)
 	return Default_config
 end
 
-vim.cmd("command! runnercode lua require'coderun'.Coderun()")
-vim.cmd("command! runnermakefile lua require'coderun'.toggle_my_feature()")
+vim.cmd("command! Runnercode lua require'coderun'.Coderun()")
+vim.cmd("command! Runnermakefile lua require'coderun'.toggle_my_feature()")
 return M
