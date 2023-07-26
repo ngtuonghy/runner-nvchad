@@ -68,8 +68,10 @@ Runnermakefile -- Toggle priority run Makefile
 M.runner = {
   n = {
     ["<leader>rc"] = { "<cmd>Runnercode<cr>", "Run code" },
-    ["<leader>rf"] = { "<cmd>Runnerfast<cr>", "Run code select" },
     ["<leader>rm"] = { "<cmd>Runnermakefile<cr>", "Toggle priority run Makefile" },
+  },
+  v = {
+    ["<leader>rf"] = { "<cmd>Runnerfast<cr>", "Run code select" },
   },
 }
 ```
