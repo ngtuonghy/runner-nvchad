@@ -59,6 +59,13 @@ Default_config = {
 		sml = { cmd = "cd $dir && sml $fileName" },
 	},
 }
+local function show_error_message(message)
+	vim.notify(message, vim.log.levels.ERROR, { title = "RUNNER-NVIM" })
+end
+
+local function show_warm_message(message)
+	vim.notify(message, vim.log.levels.WARN, { title = "RUNNER-NVIM" })
+end
 
 local function makefile(config, current_file)
 	if Default_config.clearprevious then
@@ -68,7 +75,7 @@ local function makefile(config, current_file)
 		elseif get_os == "Windows" then
 			require("nvterm.terminal").send("cls", Default_config.terminal)
 		else
-			print("can't clear terminal ")
+			show_error_message("can't clear terminal")
 		end
 	end
 	require("nvterm.terminal").send("cd " .. current_file .. " && " .. config.Makefile, Default_config.terminal)
@@ -80,7 +87,7 @@ local function get_filetype()
 	return filetype
 end
 
-function M.Coderun()
+function M.Runnercode()
 	local current_filetype = get_filetype()
 	local current_filename = vim.fn.fnamemodify(vim.fn.expand("%"), ":t")
 	local current_filepath = vim.fn.expand("%:p:h")
@@ -88,7 +95,11 @@ function M.Coderun()
 	local realPath = vim.fn.expand("%:p") -- duong dan tuyệt doi
 	local get_name = Default_config.commands[current_filetype]
 	if vim.g.toggleMakefile and get_name and get_name.Makefile then
-		makefile(get_name, current_filepath)
+		if source.checkMakefile(current_filepath) == true then
+			makefile(get_name, current_filepath)
+		else
+			show_warm_message("Makefile not found: " .. current_filepath)
+		end
 	else
 		if get_name and get_name.cmd then
 			local get_cmd =
@@ -100,7 +111,7 @@ function M.Coderun()
 				elseif get_os == "Windows" then
 					require("nvterm.terminal").send("cls", Default_config.terminal)
 				else
-					print("can't clear terminal ")
+					show_error_message("can't clear terminal")
 				end
 			end
 			require("nvterm.terminal").send(get_cmd, Default_config.terminal)
@@ -109,11 +120,11 @@ function M.Coderun()
 				source.async_remove_file(fileNameWithoutExt)
 			end
 		else
-			print("No command configured for this filetype.")
+			show_warm_message("No command configured for this filetype.")
 		end
 	end
 end
---
+
 M.Runnerfast = function()
 	local current_file = vim.fn.expand("%:p") -- Lấy đường dẫn tuyệt đối của tệp hiện tại
 	local current_filename = vim.fn.fnamemodify(current_file, ":t") -- Lấy tên tệp từ đường dẫn
@@ -125,8 +136,6 @@ M.Runnerfast = function()
 	if file then
 		file:write(get_select_vistual)
 		file:close()
-		print("Đã ghi vùng chọn vào tệp: " .. create_file_select)
-
 		local current_filetype = get_filetype()
 		local filename_tmp = vim.fn.fnamemodify(create_file_select, ":t")
 		local current_filepath = vim.fn.expand("%:p:h")
@@ -140,10 +149,9 @@ M.Runnerfast = function()
 			require("nvterm.terminal").send(get_cmd, Default_config.terminal)
 		end
 	else
-		print("Không thể mở tệp để ghi.")
+		show_error_message("cannot open file for write")
 	end
 	source.async_remove_file(create_file_select)
-	print("delete file")
 end
 
 M.setup = function(config)
@@ -151,9 +159,7 @@ M.setup = function(config)
 	return Default_config
 end
 
-vim.cmd("command! Runnercode lua require'runner-nvim'.Coderun()")
+vim.cmd("command! Runnercode lua require'runner-nvim'.Runnercode()")
+vim.cmd("command! -range Runnerfast lua require'runner-nvim'.Runnerfast()")
 vim.cmd("command! Runnermakefile lua require'runner-nvim.source'.toggleMakefile()")
-vim.cmd("command! Runnerclear lua require'runner-nvim'.toggleClearprev()")
-vim.cmd("command! Runnerfast lua require'runner-nvim'.Runnerfast()")
-vim.cmd("command! Runnercheck lua require'runner-nvim'.check()")
 return M

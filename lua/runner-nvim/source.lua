@@ -1,4 +1,3 @@
--- local soure = require("runner-nvim.init")
 local M = {}
 
 function M.changeCmd(current_filetype, current_withoutext, realPath, current_filepath, current_filename)
@@ -10,6 +9,16 @@ function M.changeCmd(current_filetype, current_withoutext, realPath, current_fil
 	getcmd = string.gsub(getcmd, "&&", ";")
 	getcmd = string.gsub(getcmd, "$fileName", current_filename)
 	return getcmd
+end
+
+function M.checkMakefile(path)
+	local makefile_upper = vim.fn.findfile("Makefile", path)
+	local makefile_lower = vim.fn.findfile("makefile", path)
+	if makefile_upper ~= "" or makefile_lower ~= "" then
+		return true
+	else
+		return false
+	end
 end
 
 function M.get_visual_selection()
@@ -61,23 +70,16 @@ end
 
 function M.async_remove_file(file_path)
 	Co = coroutine.create(function()
-		-- Chờ 5 giây trước khi xoá file
 		vim.defer_fn(function()
 			os.remove(file_path)
-			print("Đã xóa tệp: " .. file_path)
-			-- Kích hoạt coroutine sau khi xoá file
+
 			coroutine.resume(Co)
 		end, 5000)
-		-- Tạm dừng coroutine
+
 		coroutine.yield()
 	end)
 
-	-- Chạy coroutine
 	coroutine.resume(Co)
 end
-
--- function M.check()
--- end
--- Hàm tạo và chạy tiến trình bất đồng bộ
 
 return M
