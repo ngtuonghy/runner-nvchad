@@ -34,11 +34,12 @@ A Neovim plugin to run code fast in terminals [**nvterm**](https://github.com/Nv
 ```lua
 require('runner-nvim').setup{
  terminals = "horizontal", -- "horizontal|vertical|float"
- clearprevious = false,
+ clearprevious = false, -- clear output previous run
+ autoremove = flase, -- auto clear $fileNameWithoutExt
  commands = {
   lua = {
    cmd = "lua run $filePath",
-   Makefile = "Make" --lua always priority run makefile
+   Makefile = "Make" -- lua always priority run makefile
   },
   cpp = {
    cmd  = "cd $dir && g++ $fileName -o $fileNameWithoutExt && $dir$fileNameWithoutExt",
@@ -47,10 +48,17 @@ require('runner-nvim').setup{
 }
 ```
 
+- Supported customized
+  - $dir: The directory of the code file being run
+  - $fileName: The base name of the code file being run
+  - $fileNameWithoutExt: The base name of the code file being run without its extension
+  - $realPath: absolute path to the current file
+
 ## Usage
 
 ```lua
 Runnercode -- Run code
+Runnerfast -- Run code visual select
 Runnermakefile -- Toggle priority run Makefile
 ```
 
@@ -60,7 +68,15 @@ Runnermakefile -- Toggle priority run Makefile
 M.runner = {
   n = {
     ["<leader>rc"] = { "<cmd>Runnercode<cr>", "Run code" },
+    ["<leader>rf"] = { "<cmd>Runnerfast<cr>", "Run code select" },
     ["<leader>rm"] = { "<cmd>Runnermakefile<cr>", "Toggle priority run Makefile" },
   },
 }
 ```
+
+## Thank you
+
+- Thank's [vscode-code-runner](https://github.com/formulahendry/vscode-code-runner) the main inspiration of this plugin
+  [](https://github.com/NvChad/nvterm)
+
+- Thank's [nvterm](https://github.com/NvChad/nvterm) provide an API that implements this plugin

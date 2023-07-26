@@ -128,7 +128,7 @@ end
 M.Runnerfast = function()
 	local current_file = vim.fn.expand("%:p") -- Lấy đường dẫn tuyệt đối của tệp hiện tại
 	local current_filename = vim.fn.fnamemodify(current_file, ":t") -- Lấy tên tệp từ đường dẫn
-	local create_file_select = current_file:gsub(current_filename, "tmprunner_" .. current_filename)
+	local create_file_select = current_file:gsub(current_filename, "temprunner" .. current_filename)
 	-- print("filepath: " .. create_file_select)
 	local get_select_vistual = source.get_visual_selection()
 
