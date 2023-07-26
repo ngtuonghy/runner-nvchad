@@ -104,7 +104,7 @@ function M.Runnercode()
 		if get_name and get_name.cmd then
 			local get_cmd =
 				source.changeCmd(current_filetype, current_withoutext, realPath, current_filepath, current_filename)
-			if Default_config.clearprevious or vim.g.clearcode then
+			if Default_config.clearprevious then
 				local get_os = source.detect_operating_system()
 				if get_os == "Linux" or get_os == "macOS" then
 					require("nvterm.terminal").send("clear", Default_config.terminal)
