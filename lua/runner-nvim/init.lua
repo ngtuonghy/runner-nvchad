@@ -1,7 +1,10 @@
+local source = require("runner-nvim.source")
+
 local M = {}
 Default_config = {
 	terminal = "horizontal",
 	clearprevious = false,
+	autoremove = false,
 	commands = {
 		javascript = { cmd = "node $realPath" },
 		java = { cmd = "cd $dir && javac $fileName && java $fileNameWithoutExt" },
@@ -57,69 +60,9 @@ Default_config = {
 	},
 }
 
-if vim.g.toggleMakefile == nil then
-	vim.g.toggleMakefile = true
-end
-
--- Hàm để toggle chức năng
-function M.toggleMakefile()
-	vim.g.toggleMakefile = not vim.g.toggleMakefile
-	if vim.g.toggleMakefile then
-		print("Makefile prior is now enabled!")
-	else
-		print("Makefile prior is now disabled!")
-	end
-end
-
-local function get_filetype()
-	local bufnr = vim.api.nvim_get_current_buf()
-	local filetype = vim.api.nvim_buf_get_option(bufnr, "filetype")
-	return filetype
-end
-
-local function get_current_filename()
-	return vim.fn.fnamemodify(vim.fn.expand("%"), ":t")
-end
-local function get_current_filepath()
-	return vim.fn.expand("%:p:h")
-end
-local function get_real_path()
-	return vim.fn.expand("%:p")
-end
-
--- end
---	cmd = "cd $dir && g++ $fileName -o $fileNameWithoutExt && $dir $fileNameWithoutExt",
-local function changeCmd()
-	local current_filepath = get_current_filepath()
-	local current_filetype = get_filetype()
-	local current_filename = get_current_filename()
-	local current_withoutext = get_current_filename():gsub("%..*$", "")
-	local realPath = get_real_path()
-	local getcmd = Default_config.commands[current_filetype].cmd
-	getcmd = string.gsub(getcmd, "$dir$fileNameWithoutExt", "./" .. current_withoutext)
-	getcmd = string.gsub(getcmd, "$fileNameWithoutExt", current_withoutext)
-	getcmd = string.gsub(getcmd, "$realPath", realPath)
-	getcmd = string.gsub(getcmd, "$dir", current_filepath)
-	getcmd = string.gsub(getcmd, "&&", ";")
-	getcmd = string.gsub(getcmd, "$fileName", current_filename)
-	return getcmd
-end
-
-local function detect_operating_system()
-	if vim.fn.has("win32") == 1 then
-		return "Windows"
-	elseif vim.fn.has("mac") == 1 then
-		return "macOS"
-	elseif vim.fn.has("unix") == 1 then
-		return "Linux"
-	else
-		return "Unknown"
-	end
-end
-
 local function makefile(config, current_file)
 	if Default_config.clearprevious then
-		local get_os = detect_operating_system()
+		local get_os = source.detect_operating_system()
 		if get_os == "Linux" or get_os == "macOS" then
 			require("nvterm.terminal").send("clear", Default_config.terminal)
 		elseif get_os == "Windows" then
@@ -130,17 +73,28 @@ local function makefile(config, current_file)
 	end
 	require("nvterm.terminal").send("cd " .. current_file .. " && " .. config.Makefile, Default_config.terminal)
 end
+
+local function get_filetype()
+	local bufnr = vim.api.nvim_get_current_buf()
+	local filetype = vim.api.nvim_buf_get_option(bufnr, "filetype")
+	return filetype
+end
+
 function M.Coderun()
 	local current_filetype = get_filetype()
-	local current_filepath = get_current_filepath()
+	local current_filename = vim.fn.fnamemodify(vim.fn.expand("%"), ":t")
+	local current_filepath = vim.fn.expand("%:p:h")
+	local current_withoutext = current_filename:gsub("%..*$", "")
+	local realPath = vim.fn.expand("%:p") -- duong dan tuyệt doi
 	local get_name = Default_config.commands[current_filetype]
 	if vim.g.toggleMakefile and get_name and get_name.Makefile then
 		makefile(get_name, current_filepath)
 	else
 		if get_name and get_name.cmd then
-			local get_cmd = changeCmd()
-			if Default_config.clearprevious then
-				local get_os = detect_operating_system()
+			local get_cmd =
+				source.changeCmd(current_filetype, current_withoutext, realPath, current_filepath, current_filename)
+			if Default_config.clearprevious or vim.g.clearcode then
+				local get_os = source.detect_operating_system()
 				if get_os == "Linux" or get_os == "macOS" then
 					require("nvterm.terminal").send("clear", Default_config.terminal)
 				elseif get_os == "Windows" then
@@ -150,10 +104,46 @@ function M.Coderun()
 				end
 			end
 			require("nvterm.terminal").send(get_cmd, Default_config.terminal)
+			if Default_config.autoremove then
+				local fileNameWithoutExt = vim.fn.expand("%:p:r")
+				source.async_remove_file(fileNameWithoutExt)
+			end
 		else
 			print("No command configured for this filetype.")
 		end
 	end
+end
+--
+M.Runnerfast = function()
+	local current_file = vim.fn.expand("%:p") -- Lấy đường dẫn tuyệt đối của tệp hiện tại
+	local current_filename = vim.fn.fnamemodify(current_file, ":t") -- Lấy tên tệp từ đường dẫn
+	local create_file_select = current_file:gsub(current_filename, "tmprunner_" .. current_filename)
+	print("filepath: " .. create_file_select)
+	local get_select_vistual = source.get_visual_selection()
+
+	local file = io.open(create_file_select, "w")
+	if file then
+		file:write(get_select_vistual)
+		file:close()
+		print("Đã ghi vùng chọn vào tệp: " .. create_file_select)
+
+		local current_filetype = get_filetype()
+		local filename_tmp = vim.fn.fnamemodify(create_file_select, ":t")
+		local current_filepath = vim.fn.expand("%:p:h")
+		local current_withoutext_tmp = filename_tmp:gsub("%..*$", "")
+		local realPath = create_file_select
+
+		local get_name = Default_config.commands[current_filetype]
+		if get_name and get_name.cmd then
+			local get_cmd =
+				source.changeCmd(current_filetype, current_withoutext_tmp, realPath, current_filepath, filename_tmp)
+			require("nvterm.terminal").send(get_cmd, Default_config.terminal)
+		end
+	else
+		print("Không thể mở tệp để ghi.")
+	end
+	source.async_remove_file(create_file_select)
+	print("delete file")
 end
 
 M.setup = function(config)
@@ -162,5 +152,8 @@ M.setup = function(config)
 end
 
 vim.cmd("command! Runnercode lua require'runner-nvim'.Coderun()")
-vim.cmd("command! Runnermakefile lua require'runner-nvim'.toggleMakefile()")
+vim.cmd("command! Runnermakefile lua require'runner-nvim.source'.toggleMakefile()")
+vim.cmd("command! Runnerclear lua require'runner-nvim'.toggleClearprev()")
+vim.cmd("command! Runnerfast lua require'runner-nvim'.Runnerfast()")
+vim.cmd("command! Runnercheck lua require'runner-nvim'.check()")
 return M
