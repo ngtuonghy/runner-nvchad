@@ -156,7 +156,6 @@ end
 
 M.setup = function(config)
 	Default_config = vim.tbl_deep_extend("force", Default_config, config)
-	return Default_config
 end
 
 vim.cmd("command! Runnercode lua require'runner-nvim'.Runnercode()")
