@@ -42,7 +42,7 @@ require('runner-nvim').setup{
    Makefile = "Make" -- lua always priority run makefile
   },
   cpp = {
-   cmd  = "cd $dir && g++ $fileName -o $fileNameWithoutExt && $dir$fileNameWithoutExt", --defautl
+   cmd  = "cd $dir && g++ $fileName -o $fileNameWithoutExt && $dir$fileNameWithoutExt", --default
    debug = "cd $dir && g++ -g $fileName -o $fileNameWithoutExt", -- default
   },
  },
