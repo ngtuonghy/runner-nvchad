@@ -1,5 +1,4 @@
 local source = require("runner-nvim.source")
-
 local M = {}
 Default_config = {
 	terminal = "horizontal",
@@ -10,7 +9,10 @@ Default_config = {
 		java = { cmd = "cd $dir && javac $fileName && java $fileNameWithoutExt" },
 		c = { cmd = "cd $dir && gcc $fileName -o $fileNameWithoutExt && $dir$fileNameWithoutExt" },
 		zig = { cmd = "zig run $realPath" },
-		cpp = { cmd = "cd $dir && g++ $fileName -o $fileNameWithoutExt && $dir$fileNameWithoutExt" },
+		cpp = {
+			cmd = "cd $dir && g++ $fileName -o $fileNameWithoutExt && $dir$fileNameWithoutExt",
+			debug = "cd $dir && g++ -g $fileName -o $fileNameWithoutExt",
+		},
 		php = { cmd = "php $realPath" },
 		python = { cmd = "python -u $realPath" },
 		perl = { cmd = "perl $realPath" },
@@ -65,6 +67,10 @@ end
 
 local function show_warm_message(message)
 	vim.notify(message, vim.log.levels.WARN, { title = "RUNNER-NVIM" })
+end
+
+local function show_info_message(message)
+	vim.notify(message, vim.log.levels.INFO, { title = "RUNNER-NVIM" })
 end
 
 local function makefile(config, current_file)
@@ -154,11 +160,35 @@ M.Runnerfast = function()
 	source.async_remove_file(create_file_select)
 end
 
+M.Getdebug = function()
+	local current_filetype = get_filetype()
+	local current_filename = vim.fn.fnamemodify(vim.fn.expand("%"), ":t")
+	local current_filepath = vim.fn.expand("%:p:h")
+	local current_withoutext = current_filename:gsub("%..*$", "")
+	local realPath = vim.fn.expand("%:p") -- duong dan tuyệt doi
+	local get_name = Default_config.commands[current_filetype]
+	if get_name and get_name.debug then
+		show_info_message("Compile mode debug")
+		Get_cmd = source.changeCmd(current_filetype, current_withoutext, realPath, current_filepath, current_filename)
+	else
+		return nil
+	end
+	return Get_cmd
+end
+M.Runnerdebug = function()
+	local getDebug = M.Getdebug()
+	if getDebug == nil then
+		show_warm_message("The language is not setting debug mode")
+	else
+		vim.fn.system(getDebug)
+	end
+end
 M.setup = function(config)
 	Default_config = vim.tbl_deep_extend("force", Default_config, config)
 end
 
 vim.cmd("command! Runnercode lua require'runner-nvim'.Runnercode()")
 vim.cmd("command! -range Runnerfast lua require'runner-nvim'.Runnerfast()")
+vim.cmd("command! Runnerdebug lua require'runner-nvim'.Runnerdebug()")
 vim.cmd("command! Runnermakefile lua require'runner-nvim.source'.toggleMakefile()")
 return M
