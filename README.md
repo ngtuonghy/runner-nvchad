@@ -2,7 +2,7 @@
 
 A Neovim plugin to run code fast in terminals [**nvterm**](https://github.com/NvChad/nvterm)
 
-https://github.com/ngtuonghy/runner-nvim/assets/116539745/4b143ddd-9dc0-425c-821e-6547f3478541
+<https://github.com/ngtuonghy/runner-nvim/assets/116539745/4b143ddd-9dc0-425c-821e-6547f3478541>
 
 ## Installation
 
@@ -56,9 +56,38 @@ require('runner-nvim').setup{
 
 ## Usage
 
+- run debug before [dap](https://github.com/mfussenegger/nvim-dap/wiki/Debug-Adapter-installation)
+
+```lua
+local runner = require(runner-nvim)
+dap.configurations.cpp = {
+  {
+    name = "Launch file shaha",
+    type = "codelldb",
+    request = "launch",
+    program = function()
+      local getDebug = runner.Getdebug()
+      if getDebug == nil then
+        print "The language is not setting debug mode"
+        return nil
+      else
+        vim.fn.system(getDebug)
+      end
+      return vim.fn.fnamemodify(vim.fn.expand "%:p", ":r")
+    end,
+    cwd = "${workspaceFolder}",
+    stopOnEntry = false,
+    args = {},
+  },
+}
+```
+
+- command
+
 ```lua
 Runnercode -- Run code
 Runnerfast -- Run code visual select
+Runnerdebug -- mode debug
 Runnermakefile -- Toggle priority run Makefile
 ```
 
