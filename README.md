@@ -63,7 +63,7 @@ require('runner-nvim').setup{
 local runner = require(runner-nvim)
 dap.configurations.cpp = {
   {
-    name = "Launch file shaha",
+    name = "Launch",
     type = "codelldb",
     request = "launch",
     program = function()
