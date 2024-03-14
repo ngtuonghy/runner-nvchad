@@ -31,6 +31,33 @@ A Neovim plugin to run code fast in terminals [**nvterm**](https://github.com/Nv
 - However you can pass in some config options, the defaults are
 
 ```lua
+require('runner-nvchad').setup{
+ terminals = "horizontal", -- "horizontal|vertical|float"
+ clearprevious = false, -- clear output previous run
+ autoremove = flase, -- auto clear $fileNameWithoutExt
+ commands = {
+  lua = {
+   comp = "lua run $filePath",
+  },
+  cpp = {
+   comp  = "cd $dir && g++ $fileName -o $fileNameWithoutExt && $dir$fileNameWithoutExt", --default
+   dbgcomp = "cd $dir && g++ -g $fileName -o $fileNameWithoutExt", -- default
+  },
+ },
+}
+```
+
+- Supported customized
+  - $dir: The directory of the code file being run
+  - $fileName: The base name of the code file being run
+  - $fileNameWithoutExt: The base name of the code file being run without its extension
+  - $realPath: absolute path to the current file
+
+## Usage
+
+- run debug before [dap](https://github.com/mfussenegger/nvim-dap/wiki/Debug-Adapter-installation)
+
+```lua
 dap.configurations.cpp = {
  {
   name = "Launch",
@@ -48,40 +75,6 @@ dap.configurations.cpp = {
   stopOnEntry = false,
   args = {},
  },
-}
-```
-
-- Supported customized
-  - $dir: The directory of the code file being run
-  - $fileName: The base name of the code file being run
-  - $fileNameWithoutExt: The base name of the code file being run without its extension
-  - $realPath: absolute path to the current file
-
-## Usage
-
-- run debug before [dap](https://github.com/mfussenegger/nvim-dap/wiki/Debug-Adapter-installation)
-
-```lua
-local runner = require(runner-nvim)
-dap.configurations.cpp = {
-  {
-    name = "Launch",
-    type = "codelldb",
-    request = "launch",
-    program = function()
-      local getDebug = runner.Getdebug()
-      if getDebug == nil then
-        print "The language is not setting debug mode"
-        return nil
-      else
-        vim.fn.system(getDebug)
-      end
-      return vim.fn.fnamemodify(vim.fn.expand "%:p", ":r")
-    end,
-    cwd = "${workspaceFolder}",
-    stopOnEntry = false,
-    args = {},
-  },
 }
 ```
 
