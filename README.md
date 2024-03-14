@@ -1,8 +1,8 @@
 # runner-nvim
 
-A Neovim plugin to run code fast in terminals [**nvterm**](https://github.com/NvChad/nvterm)
+A Neovim plugin to run code fast in terminals [**nvchad v2.5**](https://github.com/NvChad/NvChad)
 
-<https://github.com/ngtuonghy/runner-nvim/assets/116539745/4b143ddd-9dc0-425c-821e-6547f3478541>
+https://github.com/ngtuonghy/runner-nvchad/assets/116539745/3f609efd-6fd8-488c-aaaa-7a21c5c3b947
 
 ## Installation
 
