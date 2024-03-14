@@ -1,4 +1,4 @@
-# runner-nvim
+# runner-nvchad
 
 A Neovim plugin to run code fast in terminals [**nvchad v2.5**](https://github.com/NvChad/NvChad)
 
@@ -81,29 +81,20 @@ dap.configurations.cpp = {
 - command
 
 ```lua
-Runnercode -- Run code
+Runner -- Run code
 Runnerfast -- Run code visual select
-Runnerdebug -- mode debug
-Runnermakefile -- Toggle priority run Makefile
+Runnerdbg -- run code debug
 ```
 
 - Custom mappings
 
 ```lua
-M.runner = {
-  n = {
-    ["<leader>rc"] = { "<cmd>Runnercode<cr>", "Run code" },
-    ["<leader>rm"] = { "<cmd>Runnermakefile<cr>", "Toggle priority run Makefile" },
-  },
-  v = {
-    ["<leader>rf"] = { "<cmd>Runnerfast<cr>", "Run code select" },
-  },
-}
+map("n", "<leader>rc", "<cmd>Runner<CR>", { desc = "Run code" })
+map("v", "<leader>rf", "<cmd>Runnerfast<CR>", { desc = "Run code select" })
 ```
 
 ## Thank you
 
 - Thank's [vscode-code-runner](https://github.com/formulahendry/vscode-code-runner) the main inspiration of this plugin
-  [](https://github.com/NvChad/nvterm)
 
-- Thank's [nvterm](https://github.com/NvChad/nvterm) provide an API that implements this plugin
+- Thank's [nvchad](https://github.com/NvChad/NvChad) provide an API that implements this plugin
