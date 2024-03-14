@@ -1,5 +1,7 @@
 local M = {}
 
+local listExecutorMap = require("runner-nvchad.listExecutorMap")
+
 function M.replacePlaceholder(
 	type_command,
 	current_filetype,
@@ -10,9 +12,9 @@ function M.replacePlaceholder(
 )
 	local getCompile
 	if type_command == "comp" then
-		getCompile = defaultConfig.executorMap[current_filetype].comp
+		getCompile = listExecutorMap[current_filetype].comp
 	else
-		getCompile = defaultConfig.executorMap[current_filetype].dbgComp
+		getCompile = listExecutorMap[current_filetype].dbgComp
 	end
 
 	getCompile = string.gsub(getCompile, "$dir$fileNameWithoutExt", "./" .. current_withoutext)

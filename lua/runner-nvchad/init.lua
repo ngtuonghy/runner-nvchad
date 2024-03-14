@@ -1,8 +1,7 @@
 local utils = require("runner-nvchad.utils")
 local listExecutorMap = require("runner-nvchad.listExecutorMap")
-
 local M = {}
-defaultConfig = {
+local defaultConfig = {
 	pos = "sp",
 	id = "ekk",
 	clear_cmd = false,
@@ -63,32 +62,12 @@ function M.runnerdbg()
 	end
 end
 
-function M.test()
-	if defaultConfig then
-		-- Kiểm tra xem executorMap có tồn tại không
-		if defaultConfig.executorMap then
-			-- Lấy giá trị của executorMap
-			local executorMap = defaultConfig.executorMap
-			-- Bây giờ bạn có thể làm việc với executorMap ở đây
-			-- Ví dụ, in ra tất cả các giá trị của executorMap
-			for language, config in pairs(executorMap) do
-				print(language, config.comp) -- In ra comp của từng ngôn ngữ
-			end
-		else
-			print("executorMap không tồn tại trong defaultConfig")
-		end
-	else
-		print("defaultConfig không tồn tại")
-	end
-	-- print(defaultConfig.executorMap.cpp)
-end
 M.setup = function(config)
-	config = config and vim.tbl_deep_extend("force", defaultConfig, config) or defaultConfig
+	-- config = config and vim.tbl_deep_extend("force", defaultConfig, config) or defaultConfig
+	defaultConfig = vim.tbl_deep_extend("force", defaultConfig, config)
 end
 
 vim.cmd("command! Runner lua require'runner-nvchad'.runner()")
-vim.cmd("command! Test lua require'runner-nvchad'.test()")
 -- vim.cmd("command! -range Runnerfast lua require'runner-nvim'.Runnerfast()")
 vim.cmd("command! Runnerdbg lua require'runner-nvchad'.runnerdbg()")
--- vim.cmd("command! Runnermakefile lua require'runner-nvim.source'.toggleMakefile()")
 return M
