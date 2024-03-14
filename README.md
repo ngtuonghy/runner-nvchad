@@ -12,10 +12,9 @@ A Neovim plugin to run code fast in terminals [**nvterm**](https://github.com/Nv
  require("lazy").setup({
 
  {
-  "ngtuonghy/runner-nvim",
-  dependencies = {"nvchad/nvterm"},
+  "ngtuonghy/runner-nvchad",
   config = funtions()
-  require("runner-nvim").setup{}
+  require("runner-nvchad").setup{}
 },
 
 })
@@ -26,25 +25,28 @@ A Neovim plugin to run code fast in terminals [**nvterm**](https://github.com/Nv
 - The comment plugin needs to be initialised using:
 
   ```lua
-  require("runner-nvim").setup{}
+  require("runner-nvchad").setup{}
   ```
 
 - However you can pass in some config options, the defaults are
 
 ```lua
-require('runner-nvim').setup{
- terminals = "horizontal", -- "horizontal|vertical|float"
- clearprevious = false, -- clear output previous run
- autoremove = flase, -- auto clear $fileNameWithoutExt
- commands = {
-  lua = {
-   cmd = "lua run $filePath",
-   Makefile = "Make" -- lua always priority run makefile
-  },
-  cpp = {
-   cmd  = "cd $dir && g++ $fileName -o $fileNameWithoutExt && $dir$fileNameWithoutExt", --default
-   debug = "cd $dir && g++ -g $fileName -o $fileNameWithoutExt", -- default
-  },
+dap.configurations.cpp = {
+ {
+  name = "Launch",
+  type = "codelldb",
+  request = "launch",
+  program = function()
+   local getDebug = require("runner-nvchad").runnerdbg()
+   if getDebug == false then
+    return
+   else
+    return vim.fn.fnamemodify(vim.fn.expand("%:p"), ":r")
+   end
+  end,
+  cwd = "${workspaceFolder}",
+  stopOnEntry = false,
+  args = {},
  },
 }
 ```
