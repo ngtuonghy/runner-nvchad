@@ -4,7 +4,7 @@ local M = {}
 local defaultConfig = {
 	pos = "sp",
 	id = "ekk",
-	clear_cmd = false,
+	-- clear_cmd = false,
 	autoremove = false,
 	executorMap = listExecutorMap,
 }
@@ -28,22 +28,24 @@ end
 function M.runner()
 	local current_filetype = vim.bo.filetype
 	local getName = defaultConfig.executorMap[current_filetype]
-	local clear_cmd = ""
+	-- local clear_cmd = ""
 	if getName and getName.comp then
 		local getCmdRun = getCmd("comp")
-		if defaultConfig.clear_cmd then
-			local get_os = utils.detect_operating_system()
-			clear_cmd = get_os == "windows" and "clear" or "cls"
-		end
+		-- if defaultConfig.clear_cmd then
+		-- 	local get_os = utils.detect_operating_system()
+		-- 	clear_cmd = get_os == "windows" and "clear" or "cls"
+		-- end
 		require("nvchad.term").runner({
 			pos = defaultConfig.pos,
 			cmd = getCmdRun,
 			id = defaultConfig.id,
-		}, clear_cmd)
+			clear_cmd = false,
+		})
 		if defaultConfig.autoremove then
 			local fileNameWithoutExt = vim.fn.expand("%:p:r")
 			utils.async_remove_file(fileNameWithoutExt)
 		end
+	else
 		utils.show_warm_message("No command configured for this filetype.")
 	end
 end
