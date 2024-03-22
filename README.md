@@ -82,7 +82,7 @@ dap.configurations.cpp = {
 
 ```lua
 Runner -- Run code
-Runnerfast -- Run code visual select
+Runnerfast  --(Currently not active) Run code visual select
 Runnerdbg -- run code debug
 ```
 
