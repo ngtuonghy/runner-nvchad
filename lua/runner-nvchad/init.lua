@@ -4,7 +4,7 @@ local M = {}
 local defaultConfig = {
 	pos = "sp",
 	id = "ekk",
-	-- clear_cmd = false,
+	clear_cmd = false,
 	autoremove = false,
 	executorMap = listExecutorMap,
 }
@@ -35,11 +35,16 @@ function M.runner()
 		-- 	local get_os = utils.detect_operating_system()
 		-- 	clear_cmd = get_os == "windows" and "clear" or "cls"
 		-- end
+		local clear = function()
+			if defaultConfig.clear_cmd then
+				return false
+			end
+			return ""
+		end
 		require("nvchad.term").runner({
 			pos = defaultConfig.pos,
 			cmd = getCmdRun,
-			id = defaultConfig.id,
-			clear_cmd = false,
+			clear_cmd = clear(),
 		})
 		if defaultConfig.autoremove then
 			local fileNameWithoutExt = vim.fn.expand("%:p:r")
