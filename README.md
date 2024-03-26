@@ -32,9 +32,10 @@ https://github.com/ngtuonghy/runner-nvchad/assets/116539745/3f609efd-6fd8-488c-a
 
 ```lua
 require('runner-nvchad').setup{
- terminals = "horizontal", -- "horizontal|vertical|float"
- clearprevious = false, -- clear output previous run
- autoremove = flase, -- auto clear $fileNameWithoutExt
+ pos = "sp", --(vsp|sp|float) "horizontal|vertical|float"
+ id = "ekk",
+ clear_cmd = false, -- clear output previous run
+ autoremove = false, -- auto clear $fileNameWithoutExt
  commands = {
   lua = {
    comp = "lua run $filePath",
